@@ -81,24 +81,27 @@ class VideoSorter(VideoSorterInterface):
         
 
         for mp4_file in tqdm(mp4_files):
-            mp4_file = str(mp4_file)
-            print(f"Opening {mp4_file} in Quick Look...")
+            repeat = True
+            while repeat:
+                repeat = False
+                mp4_file = str(mp4_file)
 
-            # Open in Quick Look
-            self._quick_look(mp4_file)
+                # Open in Quick Look
+                self._quick_look(mp4_file)
 
-            user_input = input("Your choice: ").strip().lower()
+                user_input = input("Your choice: ").strip().lower()
 
-            if user_input in self.key_to_directory:
-                dest_dir = self.key_to_directory[user_input]
-                moved_path = self._move_file(mp4_file, dest_dir)
-                last_moved = (moved_path, mp4_file)
-                print(f"Moved {mp4_file} to {dest_dir}.")
-            elif user_input == 'u':
-                self._undo_move()
-            elif user_input == 'q':
-                print("Exiting...")
-                break
-            else:
-                print("skipping")
-                continue
+                if user_input in self.key_to_directory:
+                    dest_dir = self.key_to_directory[user_input]
+                    moved_path = self._move_file(mp4_file, dest_dir)
+                    last_moved = (moved_path, mp4_file)
+                    print(f"=== Moved to {dest_dir}. ===")
+                elif user_input == 'u':
+                    self._undo_move()
+                    repeat = True
+                elif user_input == 'q':
+                    print("Exiting...")
+                    break
+                else:
+                    print("skipping")
+                    continue
